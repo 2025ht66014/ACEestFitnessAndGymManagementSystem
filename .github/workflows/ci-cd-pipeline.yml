@@ -8,11 +8,23 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t my-python-app .
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Run Pytest inside Docker
-        run: docker run --rm my-python-app pytest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: yourdockerhubusername/my-python-app:latest
+
+      - name: Run tests inside Docker
+        run: docker run --rm yourdockerhubusername/my-python-app pytest
