@@ -1,1 +1,19 @@
 YAML
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t my-python-app .
+
+      - name: Run Pytest inside Docker
+        run: docker run --rm my-python-app pytest
